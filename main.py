@@ -46,6 +46,9 @@ explosaoSound = pygame.mixer.Sound("assets/fracassado.mp3")
 transformSound = pygame.mixer.Sound("assets/transform.mp3")
 fonteMenu = pygame.font.SysFont("comicsans",25)
 fonteMorte = pygame.font.SysFont("arial",120)
+imagem_objeto = pygame.image.load("assets/objetovoando.png")
+imagem_objeto = pygame.transform.scale(imagem_objeto, (50, 50))
+objeto_largura, objeto_altura = imagem_objeto.get_size()
 pygame.mixer.music.load("assets/blizzard.mp3")
 
 def tela_instrucoes(nome):
@@ -88,6 +91,13 @@ def tela_instrucoes(nome):
 
 
 def jogar():
+        # Variáveis do objeto voador
+    posicaoXObjeto = 0
+    posicaoYObjeto = 40
+    velocidadeObjeto = 5
+    direcaoObjeto = 1
+    objeto_largura, objeto_altura = imagem_objeto.get_size()
+
     largura_janela = 300
     altura_janela = 100
     def obter_nome():
@@ -182,6 +192,9 @@ def jogar():
     pause = False
     raio_sol = 100
     direcao_pulso = 1
+    posicaoXObjeto = 0
+    posicaoYObjeto = 20  # posição no topo da tela
+    velocidadeObjeto = 5
 
     while True:
         for evento in pygame.event.get():
@@ -250,9 +263,25 @@ def jogar():
         elif posicaoYPersona > tamanho[1] - sprite_altura:
             posicaoYPersona = tamanho[1] - sprite_altura
 
+        posicaoXObjeto += velocidadeObjeto * direcaoObjeto
+
+        if posicaoXObjeto + objeto_largura >= tamanho[0]:
+            direcaoObjeto = -1  # Inverter direção para esquerda
+        elif posicaoXObjeto <= 0:
+            direcaoObjeto = 1  # Inverter direção para direita
+
+        if posicaoXObjeto + objeto_largura >= tamanho[0]:
+            direcaoObjeto = -1  # vira pra esquerda
+
+        elif posicaoXObjeto <= 0:
+            direcaoObjeto = 1  # vira pra direita
+
+        # Desenha o objeto
+        tela.blit(imagem_objeto, (posicaoXObjeto, posicaoYObjeto))
+
         tela.fill(branco)
         tela.blit(fundoJogo, (0,0) )
-        
+        tela.blit(imagem_objeto, (posicaoXObjeto, posicaoYObjeto))
                 # Atualiza o tamanho do sol (efeito de pulsação)
         raio_sol += direcao_pulso * 0.5
         if raio_sol >= 100:

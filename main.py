@@ -412,17 +412,25 @@ def start():
 def dead():
     pygame.mixer.music.stop()
     pygame.mixer.Sound.play(explosaoSound)
+
     larguraButtonStart = 150
     alturaButtonStart  = 40
     larguraButtonQuit = 150
     alturaButtonQuit  = 40
     
-    # Ler o arquivo de log
-    with open("base.atitus", "r") as arquivo:
-        log_partidas = json.load(arquivo)
+    # Carregar dados do log
+    try:
+        with open("base.atitus", "r") as arquivo:
+            log_partidas = json.load(arquivo)
+    except (FileNotFoundError, json.JSONDecodeError):
+        log_partidas = {}
 
-    # Pegar os últimos 5 registros (considerando ordem de inserção)
+    # Pega os últimos 5 registros (os últimos inseridos)
     ultimos_registros = list(log_partidas.items())[-5:]
+
+    fonte_titulo = pygame.font.SysFont("arial", 50)
+    fonte_log = pygame.font.SysFont("comicsans", 28)
+    fonte_botao = pygame.font.SysFont("comicsans", 25)
 
     while True:
         for evento in pygame.event.get():
@@ -447,29 +455,28 @@ def dead():
                     quit()
 
         tela.fill(branco)
-        tela.blit(fundoDead, (0,0) )
+        tela.blit(fundoDead, (0,0))
 
-        # Título da tela de morte
-        titulo = fonteMenu.render("Últimas 5 partidas", True, preto)
-        tela.blit(titulo, (20, 20))
+        # Título
+        titulo = fonte_titulo.render("Dados de Partida (Últimos 5)", True, preto)
+        tela.blit(titulo, ((tamanho[0] - titulo.get_width()) // 2, 30))
 
-        # Mostrar os últimos 5 registros (lista)
-        y_offset = 60
-        for i, (nickname, dados) in enumerate(ultimos_registros):
-            pontos, data = dados
-            texto = f"{i+1}. {nickname}: {pontos} pontos em {data}"
-            texto_renderizado = fonteMenu.render(texto, True, preto)
-            tela.blit(texto_renderizado, (20, y_offset))
-            y_offset += 30  # Espaço entre linhas
+        # Mostrar os registros
+        y_offset = 120
+        for i, (nome, dados) in enumerate(ultimos_registros):
+            texto = f"{i+1}. {nome} - {dados['pontos']} pontos - {dados['data_hora']}"
+            texto_renderizado = fonte_log.render(texto, True, preto)
+            tela.blit(texto_renderizado, (50, y_offset))
+            y_offset += 40
 
-        # Botões Iniciar e Sair
-        startButton = pygame.draw.rect(tela, branco, (10, 250, larguraButtonStart, alturaButtonStart), border_radius=15)
-        startTexto = fonteMenu.render("Iniciar Game", True, preto)
-        tela.blit(startTexto, (25, 260))
+        # Botões
+        startButton = pygame.draw.rect(tela, branco, (10,10, larguraButtonStart, alturaButtonStart), border_radius=15)
+        startTexto = fonte_botao.render("Iniciar Game", True, preto)
+        tela.blit(startTexto, (25,12))
         
-        quitButton = pygame.draw.rect(tela, branco, (10, 300, larguraButtonQuit, alturaButtonQuit), border_radius=15)
-        quitTexto = fonteMenu.render("Sair do Game", True, preto)
-        tela.blit(quitTexto, (25, 310))
+        quitButton = pygame.draw.rect(tela, branco, (10,60, larguraButtonQuit, alturaButtonQuit), border_radius=15)
+        quitTexto = fonte_botao.render("Sair do Game", True, preto)
+        tela.blit(quitTexto, (25,62))
 
         pygame.display.update()
         relogio.tick(60)

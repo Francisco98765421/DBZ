@@ -1,16 +1,19 @@
-# pip install cx_freeze
 import cx_Freeze
-executaveis = [ 
-               cx_Freeze.Executable(script="main.py", icon="assets/icone.ico") ]
-cx_Freeze.setup(
-    name = "Goku",
-    options={
-        "build_exe":{
-            "packages":["pygame"],
-            "include_files":["assets"]
-        }
-    }, executables = executaveis
-)
+from cx_Freeze import setup, Executable
 
-# python setup.py build
-# python setup.py bdist_msi
+executables = [
+    Executable(script="main.py", icon="assets/favicon.ico")
+]
+
+build_options = {
+    "packages": ["pygame", "os", "random", "tkinter", "pyttsx3", "json", "speech_recognition"],
+    "include_files": ["assets/", "recursos/", "base.atitus"]
+}
+
+setup(
+    name="DBZ",
+    version="1.0",
+    description="Jogo Dragon Blast Z",
+    options={"build_exe": build_options},
+    executables=executables
+)    

@@ -1,8 +1,11 @@
 Sou **Francisco Luís Volpato** e este jogo em Pygame coloca você controlando o Goku tentando **Defender** enquanto inimigos o atacam.
 # Desenvolvedor 
-*Nome:** Francisco Luís Volpato 
+**Nome:** Francisco Luís Volpato 
 **Ra:** 1137862 
 # Testador do Jogo
+**Nome:** Bruno Galvagni
+**Ra:** 1137862
+
 
 ---
 

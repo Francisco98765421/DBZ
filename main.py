@@ -172,7 +172,7 @@ def jogar():
     movimentoYPersona  = 0
     posicaoXKi = 400
     posicaoYKi = -240
-    velocidadeKi = 1
+    velocidadeKi = 50
     pygame.mixer.Sound.play(kiSound)
     pygame.mixer.music.play(-1)
     pontos = 0
@@ -417,25 +417,13 @@ def dead():
     larguraButtonQuit = 150
     alturaButtonQuit  = 40
     
-    
-    root = tk.Tk()
-    root.title("Tela da Morte")
+    # Ler o arquivo de log
+    with open("base.atitus", "r") as arquivo:
+        log_partidas = json.load(arquivo)
 
-    # Adiciona um título na tela
-    label = tk.Label(root, text="Log das Partidas", font=("Arial", 16))
-    label.pack(pady=10)
+    # Pegar os últimos 5 registros (considerando ordem de inserção)
+    ultimos_registros = list(log_partidas.items())[-5:]
 
-    # Criação do Listbox para mostrar o log
-    listbox = tk.Listbox(root, width=50, height=10, selectmode=tk.SINGLE)
-    listbox.pack(pady=20)
-
-    # Adiciona o log das partidas no Listbox
-    log_partidas = open("base.atitus", "r").read()
-    log_partidas = json.loads(log_partidas)
-    for chave in log_partidas:
-        listbox.insert(tk.END, f"Pontos: {log_partidas[chave][0]} na data: {log_partidas[chave][1]} - Nickname: {chave}")  # Adiciona cada linha no Listbox
-    
-    root.mainloop()
     while True:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -448,16 +436,12 @@ def dead():
                     larguraButtonQuit = 140
                     alturaButtonQuit  = 35
 
-                
             elif evento.type == pygame.MOUSEBUTTONUP:
-                # Verifica se o clique foi dentro do retângulo
                 if startButton.collidepoint(evento.pos):
-                    #pygame.mixer.music.play(-1)
                     larguraButtonStart = 150
                     alturaButtonStart  = 40
                     jogar()
                 if quitButton.collidepoint(evento.pos):
-                    #pygame.mixer.music.play(-1)
                     larguraButtonQuit = 150
                     alturaButtonQuit  = 40
                     quit()
@@ -465,13 +449,27 @@ def dead():
         tela.fill(branco)
         tela.blit(fundoDead, (0,0) )
 
-        startButton = pygame.draw.rect(tela, branco, (10,10, larguraButtonStart, alturaButtonStart), border_radius=15)
+        # Título da tela de morte
+        titulo = fonteMenu.render("Últimas 5 partidas", True, preto)
+        tela.blit(titulo, (20, 20))
+
+        # Mostrar os últimos 5 registros (lista)
+        y_offset = 60
+        for i, (nickname, dados) in enumerate(ultimos_registros):
+            pontos, data = dados
+            texto = f"{i+1}. {nickname}: {pontos} pontos em {data}"
+            texto_renderizado = fonteMenu.render(texto, True, preto)
+            tela.blit(texto_renderizado, (20, y_offset))
+            y_offset += 30  # Espaço entre linhas
+
+        # Botões Iniciar e Sair
+        startButton = pygame.draw.rect(tela, branco, (10, 250, larguraButtonStart, alturaButtonStart), border_radius=15)
         startTexto = fonteMenu.render("Iniciar Game", True, preto)
-        tela.blit(startTexto, (25,12))
+        tela.blit(startTexto, (25, 260))
         
-        quitButton = pygame.draw.rect(tela, branco, (10,60, larguraButtonQuit, alturaButtonQuit), border_radius=15)
+        quitButton = pygame.draw.rect(tela, branco, (10, 300, larguraButtonQuit, alturaButtonQuit), border_radius=15)
         quitTexto = fonteMenu.render("Sair do Game", True, preto)
-        tela.blit(quitTexto, (25,62))
+        tela.blit(quitTexto, (25, 310))
 
         pygame.display.update()
         relogio.tick(60)

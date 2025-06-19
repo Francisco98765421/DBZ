@@ -2,7 +2,7 @@ import cx_Freeze
 from cx_Freeze import setup, Executable
 
 executables = [
-    Executable(script="main.py", icon="assets/favicon.ico")
+    Executable(script="main.py", icon="assets/favicon.ico", base="Win32GUI")
 ]
 
 build_options = {
@@ -16,4 +16,4 @@ setup(
     description="Jogo Dragon Blast Z",
     options={"build_exe": build_options},
     executables=executables
-)    
+)

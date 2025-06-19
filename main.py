@@ -172,7 +172,7 @@ def jogar():
     movimentoYPersona  = 0
     posicaoXKi = 400
     posicaoYKi = -240
-    velocidadeKi = 50
+    velocidadeKi = 1
     pygame.mixer.Sound.play(kiSound)
     pygame.mixer.music.play(-1)
     pontos = 0
